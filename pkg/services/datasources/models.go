@@ -3,6 +3,7 @@ package datasources
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/grafana/grafana/pkg/components/simplejson"
@@ -65,6 +66,8 @@ type DataSource struct {
 	SecureJsonData    map[string][]byte `json:"secureJsonData"`
 	ReadOnly          bool              `json:"readOnly"`
 	UID               string            `json:"uid" xorm:"uid"`
+	// AllowedRoles contains the roles that are allowed to access this datasource. Empty means all roles are allowed.
+	AllowedRoles      string `json:"allowedRoles,omitempty" xorm:"allowed_roles"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion" xorm:"api_version"`
 	// swagger:ignore
@@ -82,6 +85,22 @@ func (ds *DataSource) IsSecureSocksDSProxyEnabled() bool {
 		ds.isSecureSocksDSProxyEnabled = &enabled
 	}
 	return *ds.isSecureSocksDSProxyEnabled
+}
+
+// IsRoleAllowed checks if the given role is allowed to access this datasource.
+// If AllowedRoles is empty, all roles are allowed.
+func (ds *DataSource) IsRoleAllowed(role string) bool {
+	if ds.AllowedRoles == "" {
+		return true
+	}
+	// Parse the comma-separated list of allowed roles
+	allowedRoles := strings.Split(ds.AllowedRoles, ",")
+	for _, allowedRole := range allowedRoles {
+		if strings.TrimSpace(allowedRole) == role {
+			return true
+		}
+	}
+	return false
 }
 
 type TeamHTTPHeadersJSONData struct {
@@ -165,6 +184,7 @@ type AddDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
+	AllowedRoles    string            `json:"allowedRoles,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore
@@ -192,6 +212,7 @@ type UpdateDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
+	AllowedRoles    string            `json:"allowedRoles,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore
