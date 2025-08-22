@@ -8,8 +8,10 @@ const setup = () => {
   const props: Props = {
     dataSourceName: 'Graphite',
     isDefault: false,
+    allowedRoles: '',
     onDefaultChange: jest.fn(),
     onNameChange: jest.fn(),
+    onAllowedRolesChange: jest.fn(),
   };
 
   return render(<BasicSettings {...props} />);

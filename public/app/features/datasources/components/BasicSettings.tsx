@@ -6,15 +6,19 @@ import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { InlineField, InlineSwitch, Input, Badge, useStyles2 } from '@grafana/ui';
 
+import { DataSourceRoleAccess } from './DataSourceRoleAccess';
+
 export interface Props {
   dataSourceName: string;
   isDefault: boolean;
+  allowedRoles: string;
   onNameChange: (name: string) => void;
   onDefaultChange: (value: boolean) => void;
+  onAllowedRolesChange: (allowedRoles: string) => void;
   disabled?: boolean;
 }
 
-export function BasicSettings({ dataSourceName, isDefault, onDefaultChange, onNameChange, disabled }: Props) {
+export function BasicSettings({ dataSourceName, isDefault, allowedRoles, onDefaultChange, onNameChange, onAllowedRolesChange, disabled }: Props) {
   return (
     <>
       <div
@@ -65,6 +69,12 @@ export function BasicSettings({ dataSourceName, isDefault, onDefaultChange, onNa
           </InlineField>
         </div>
       </div>
+
+      <DataSourceRoleAccess
+        allowedRoles={allowedRoles}
+        onAllowedRolesChange={onAllowedRolesChange}
+        disabled={disabled}
+      />
     </>
   );
 }

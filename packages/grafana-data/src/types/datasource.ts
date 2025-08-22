@@ -694,6 +694,11 @@ export interface DataSourceSettings<T extends DataSourceJsonData = DataSourceJso
   withCredentials: boolean;
   version?: number;
   apiVersion?: string;
+  /**
+   * Comma-separated list of roles that are allowed to access this datasource.
+   * Empty string means all roles are allowed.
+   */
+  allowedRoles?: string;
 }
 
 /**
