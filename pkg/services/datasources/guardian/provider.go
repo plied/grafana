@@ -22,12 +22,6 @@ func ProvideGuardian() *OSSProvider {
 type OSSProvider struct{}
 
 func (p *OSSProvider) New(orgID int64, user identity.Requester, dataSources ...datasources.DataSource) DatasourceGuardian {
-	// Check if any datasource has role restrictions
-	for _, ds := range dataSources {
-		if ds.AllowedRoles != "" {
-			return NewRoleBasedGuardian(user)
-		}
-	}
-	// Default to allowing all access if no role restrictions are set
-	return &AllowGuardian{}
+	// Always use role-based guardian as it can handle both restricted and unrestricted datasources
+	return NewRoleBasedGuardian(user)
 }

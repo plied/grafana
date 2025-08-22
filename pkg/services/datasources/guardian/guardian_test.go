@@ -82,15 +82,15 @@ func TestOSSProvider_New(t *testing.T) {
 	provider := &OSSProvider{}
 	user := &user.SignedInUser{OrgRole: org.RoleViewer}
 
-	t.Run("returns AllowGuardian when no role restrictions", func(t *testing.T) {
+	t.Run("always returns RoleBasedGuardian", func(t *testing.T) {
 		datasources := []datasources.DataSource{
 			{UID: "ds1", AllowedRoles: ""},
 			{UID: "ds2", AllowedRoles: ""},
 		}
 
 		guardian := provider.New(1, user, datasources...)
-		_, isAllowGuardian := guardian.(*AllowGuardian)
-		assert.True(t, isAllowGuardian)
+		_, isRoleBasedGuardian := guardian.(*RoleBasedGuardian)
+		assert.True(t, isRoleBasedGuardian)
 	})
 
 	t.Run("returns RoleBasedGuardian when role restrictions exist", func(t *testing.T) {
