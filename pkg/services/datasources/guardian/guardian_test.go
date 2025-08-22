@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/grafana/grafana/pkg/services/datasources"
+	fakeDS "github.com/grafana/grafana/pkg/services/datasources/fakes"
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/user"
 )
@@ -62,7 +63,8 @@ func TestRoleBasedGuardian_FilterDatasourcesByRole(t *testing.T) {
 			user := &user.SignedInUser{
 				OrgRole: tt.userRole,
 			}
-			guardian := NewRoleBasedGuardian(user)
+			fakeDSService := &fakeDS.FakeDataSourceService{}
+			guardian := NewRoleBasedGuardian(user, 1, fakeDSService)
 
 			filtered, err := guardian.FilterDatasourcesByReadPermissions(tt.datasources)
 			require.NoError(t, err)
@@ -79,7 +81,8 @@ func TestRoleBasedGuardian_FilterDatasourcesByRole(t *testing.T) {
 }
 
 func TestOSSProvider_New(t *testing.T) {
-	provider := &OSSProvider{}
+	fakeDSService := &fakeDS.FakeDataSourceService{}
+	provider := &OSSProvider{dsService: fakeDSService}
 	user := &user.SignedInUser{OrgRole: org.RoleViewer}
 
 	t.Run("always returns RoleBasedGuardian", func(t *testing.T) {
@@ -103,4 +106,73 @@ func TestOSSProvider_New(t *testing.T) {
 		_, isRoleBasedGuardian := guardian.(*RoleBasedGuardian)
 		assert.True(t, isRoleBasedGuardian)
 	})
+}
+
+func TestRoleBasedGuardian_CanQuery(t *testing.T) {
+	tests := []struct {
+		name       string
+		userRole   org.RoleType
+		datasource *datasources.DataSource
+		expected   bool
+	}{
+		{
+			name:     "admin can query admin-only datasource",
+			userRole: org.RoleAdmin,
+			datasource: &datasources.DataSource{
+				ID:           1,
+				OrgID:        1,
+				AllowedRoles: "Admin",
+			},
+			expected: true,
+		},
+		{
+			name:     "editor cannot query admin-only datasource",
+			userRole: org.RoleEditor,
+			datasource: &datasources.DataSource{
+				ID:           1,
+				OrgID:        1,
+				AllowedRoles: "Admin",
+			},
+			expected: false,
+		},
+		{
+			name:     "viewer can query unrestricted datasource",
+			userRole: org.RoleViewer,
+			datasource: &datasources.DataSource{
+				ID:           1,
+				OrgID:        1,
+				AllowedRoles: "",
+			},
+			expected: true,
+		},
+		{
+			name:     "editor can query editor-accessible datasource",
+			userRole: org.RoleEditor,
+			datasource: &datasources.DataSource{
+				ID:           1,
+				OrgID:        1,
+				AllowedRoles: "Editor,Admin",
+			},
+			expected: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			user := &user.SignedInUser{
+				OrgID:   1,
+				OrgRole: tt.userRole,
+			}
+			
+			fakeDSService := &fakeDS.FakeDataSourceService{
+				DataSources: []*datasources.DataSource{tt.datasource},
+			}
+			
+			guardian := NewRoleBasedGuardian(user, 1, fakeDSService)
+
+			canQuery, err := guardian.CanQuery(tt.datasource.ID)
+			require.NoError(t, err)
+			assert.Equal(t, tt.expected, canQuery)
+		})
+	}
 }

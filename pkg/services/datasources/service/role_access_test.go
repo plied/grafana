@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/grafana/grafana/pkg/services/datasources"
+	fakeDS "github.com/grafana/grafana/pkg/services/datasources/fakes"
 	"github.com/grafana/grafana/pkg/services/datasources/guardian"
 	"github.com/grafana/grafana/pkg/services/org"
 	"github.com/grafana/grafana/pkg/services/user"
@@ -81,7 +82,10 @@ func TestRoleBasedAccess_Integration(t *testing.T) {
 			}
 
 			// Create guardian
-			guardianProvider := guardian.ProvideGuardian()
+			fakeDSService := &fakeDS.FakeDataSourceService{
+				DataSources: datasources,
+			}
+			guardianProvider := guardian.ProvideGuardian(fakeDSService)
 			guard := guardianProvider.New(orgID, user)
 
 			// Filter datasources by role

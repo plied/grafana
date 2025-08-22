@@ -1,6 +1,8 @@
 package guardian
 
 import (
+	"context"
+
 	"github.com/grafana/grafana/pkg/apimachinery/identity"
 	"github.com/grafana/grafana/pkg/services/datasources"
 	"github.com/grafana/grafana/pkg/services/org"
@@ -28,16 +30,32 @@ var _ DatasourceGuardian = new(RoleBasedGuardian)
 
 // RoleBasedGuardian implements role-based access control for datasources
 type RoleBasedGuardian struct {
-	user identity.Requester
+	user      identity.Requester
+	orgID     int64
+	dsService datasources.DataSourceService
 }
 
-func NewRoleBasedGuardian(user identity.Requester) *RoleBasedGuardian {
-	return &RoleBasedGuardian{user: user}
+func NewRoleBasedGuardian(user identity.Requester, orgID int64, dsService datasources.DataSourceService) *RoleBasedGuardian {
+	return &RoleBasedGuardian{
+		user:      user,
+		orgID:     orgID,
+		dsService: dsService,
+	}
 }
 
 func (r *RoleBasedGuardian) CanQuery(datasourceID int64) (bool, error) {
-	// For now, always allow query. This could be extended to check specific datasource permissions
-	return true, nil
+	// Get the datasource to check its allowed roles
+	ds, err := r.dsService.GetDataSource(context.Background(), &datasources.GetDataSourceQuery{
+		ID:    datasourceID,
+		OrgID: r.orgID,
+	})
+	if err != nil {
+		return false, err
+	}
+
+	// Check if user's role is allowed to access this datasource
+	userRole := r.getUserRole()
+	return ds.IsRoleAllowed(userRole), nil
 }
 
 func (r *RoleBasedGuardian) FilterDatasourcesByReadPermissions(ds []*datasources.DataSource) ([]*datasources.DataSource, error) {

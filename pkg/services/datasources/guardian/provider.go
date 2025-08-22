@@ -15,13 +15,15 @@ type DatasourceGuardian interface {
 	FilterDatasourcesByQueryPermissions([]*datasources.DataSource) ([]*datasources.DataSource, error)
 }
 
-func ProvideGuardian() *OSSProvider {
-	return &OSSProvider{}
+func ProvideGuardian(dsService datasources.DataSourceService) *OSSProvider {
+	return &OSSProvider{dsService: dsService}
 }
 
-type OSSProvider struct{}
+type OSSProvider struct {
+	dsService datasources.DataSourceService
+}
 
 func (p *OSSProvider) New(orgID int64, user identity.Requester, dataSources ...datasources.DataSource) DatasourceGuardian {
 	// Always use role-based guardian as it can handle both restricted and unrestricted datasources
-	return NewRoleBasedGuardian(user)
+	return NewRoleBasedGuardian(user, orgID, p.dsService)
 }
