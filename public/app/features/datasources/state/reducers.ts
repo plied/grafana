@@ -24,7 +24,7 @@ export const initialState: DataSourcesState = {
   isSortAscending: true,
 };
 
-export const dataSourceLoaded = createAction<DataSourceSettingsWithTeams>('dataSources/dataSourceLoaded');
+export const dataSourceLoaded = createAction<DataSourceSettings>('dataSources/dataSourceLoaded');
 export const dataSourcesLoad = createAction<void>('dataSources/dataSourcesLoad');
 export const dataSourcesLoaded = createAction<DataSourceSettings[]>('dataSources/dataSourcesLoaded');
 export const dataSourceMetaLoaded = createAction<DataSourcePluginMeta>('dataSources/dataSourceMetaLoaded');

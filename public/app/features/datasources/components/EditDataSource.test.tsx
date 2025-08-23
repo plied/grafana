@@ -27,6 +27,11 @@ jest.mock('@grafana/runtime', () => {
   };
 });
 
+// Mock the backend service called by TeamPicker
+jest.mock('@grafana/runtime', () => ({
+  getBackendSrv: jest.fn(),
+}));
+
 setPluginLinksHook(() => ({ links: [], isLoading: false }));
 
 const setup = (props?: Partial<ViewProps>) => {
@@ -43,7 +48,7 @@ const setup = (props?: Partial<ViewProps>) => {
         onDelete={jest.fn()}
         onDefaultChange={jest.fn()}
         onNameChange={jest.fn()}
-        onAllowedRolesChange={jest.fn()}
+        onAllowedTeamsChange={jest.fn()}
         onOptionsChange={onOptionsChange}
         onTest={jest.fn()}
         onUpdate={jest.fn()}
