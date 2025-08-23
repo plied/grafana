@@ -67,7 +67,7 @@ export class DataSourceTeamAccess extends Component<Props, State> {
       <div className="gf-form-group">
         <div className="gf-form-inline">
           <InlineField
-            label={t('datasources.team-access.label', 'Team Access')}
+            label={t('datasources.team-access.label', 'Team')}
             tooltip={t(
               'datasources.team-access.tooltip',
               'Restrict access to this datasource to specific teams. Leave empty to allow all users to access this datasource.'
