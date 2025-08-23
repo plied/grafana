@@ -3,6 +3,7 @@ package datasources
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -66,8 +67,8 @@ type DataSource struct {
 	SecureJsonData    map[string][]byte `json:"secureJsonData"`
 	ReadOnly          bool              `json:"readOnly"`
 	UID               string            `json:"uid" xorm:"uid"`
-	// AllowedRoles contains the roles that are allowed to access this datasource. Empty means all roles are allowed.
-	AllowedRoles      string `json:"allowedRoles,omitempty" xorm:"allowed_roles"`
+	// AllowedTeams contains the teams that are allowed to access this datasource. Empty means all teams are allowed.
+	AllowedTeams      string `json:"allowedTeams,omitempty" xorm:"allowed_roles"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion" xorm:"api_version"`
 	// swagger:ignore
@@ -87,16 +88,17 @@ func (ds *DataSource) IsSecureSocksDSProxyEnabled() bool {
 	return *ds.isSecureSocksDSProxyEnabled
 }
 
-// IsRoleAllowed checks if the given role is allowed to access this datasource.
-// If AllowedRoles is empty, all roles are allowed.
-func (ds *DataSource) IsRoleAllowed(role string) bool {
-	if ds.AllowedRoles == "" {
+// IsTeamAllowed checks if the given team ID is allowed to access this datasource.
+// If AllowedTeams is empty, all teams are allowed.
+func (ds *DataSource) IsTeamAllowed(teamID int64) bool {
+	if ds.AllowedTeams == "" {
 		return true
 	}
-	// Parse the comma-separated list of allowed roles
-	allowedRoles := strings.Split(ds.AllowedRoles, ",")
-	for _, allowedRole := range allowedRoles {
-		if strings.TrimSpace(allowedRole) == role {
+	// Parse the comma-separated list of allowed team IDs
+	allowedTeams := strings.Split(ds.AllowedTeams, ",")
+	teamIDStr := fmt.Sprintf("%d", teamID)
+	for _, allowedTeam := range allowedTeams {
+		if strings.TrimSpace(allowedTeam) == teamIDStr {
 			return true
 		}
 	}
@@ -184,7 +186,7 @@ type AddDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
-	AllowedRoles    string            `json:"allowedRoles,omitempty"`
+	AllowedTeams    string            `json:"allowedTeams,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore
@@ -212,7 +214,7 @@ type UpdateDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
-	AllowedRoles    string            `json:"allowedRoles,omitempty"`
+	AllowedTeams    string            `json:"allowedTeams,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore

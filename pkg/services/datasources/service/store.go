@@ -280,7 +280,7 @@ func (ss *SqlStore) AddDataSource(ctx context.Context, cmd *datasources.AddDataS
 			Version:         1,
 			ReadOnly:        cmd.ReadOnly,
 			UID:             cmd.UID,
-			AllowedRoles:    cmd.AllowedRoles,
+			AllowedTeams:    cmd.AllowedTeams,
 			IsPrunable:      cmd.IsPrunable,
 			APIVersion:      cmd.APIVersion,
 		}
@@ -361,7 +361,7 @@ func (ss *SqlStore) UpdateDataSource(ctx context.Context, cmd *datasources.Updat
 			Version:         cmd.Version + 1,
 			ReadOnly:        cmd.ReadOnly,
 			UID:             cmd.UID,
-			AllowedRoles:    cmd.AllowedRoles,
+			AllowedTeams:    cmd.AllowedTeams,
 			IsPrunable:      cmd.IsPrunable,
 			APIVersion:      cmd.APIVersion,
 		}
