@@ -2,7 +2,6 @@ import { DataSourcePluginMeta, DataSourceSettings, LayoutMode } from '@grafana/d
 import { TestingStatus } from '@grafana/runtime';
 import { GenericDataSourcePlugin } from 'app/features/datasources/types';
 
-
 export interface DataSourcesState {
   dataSources: DataSourceSettings[];
   searchQuery: string;
