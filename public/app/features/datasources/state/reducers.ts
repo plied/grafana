@@ -37,6 +37,7 @@ export const setDataSourcesLayoutMode = createAction<LayoutMode>('dataSources/se
 export const setDataSourceTypeSearchQuery = createAction<string>('dataSources/setDataSourceTypeSearchQuery');
 export const setDataSourceName = createAction<string>('dataSources/setDataSourceName');
 export const setIsDefault = createAction<boolean>('dataSources/setIsDefault');
+export const setAllowedTeams = createAction<string>('dataSources/setAllowedTeams');
 export const setIsSortAscending = createAction<boolean>('dataSources/setIsSortAscending');
 
 // Redux Toolkit uses ImmerJs as part of their solution to ensure that state objects are not mutated.
@@ -99,6 +100,13 @@ export const dataSourcesReducer = (state: DataSourcesState = initialState, actio
     return {
       ...state,
       dataSource: { ...state.dataSource, isDefault: action.payload },
+    };
+  }
+
+  if (setAllowedTeams.match(action)) {
+    return {
+      ...state,
+      dataSource: { ...state.dataSource, allowedTeams: action.payload },
     };
   }
 

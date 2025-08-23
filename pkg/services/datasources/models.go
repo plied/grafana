@@ -3,6 +3,8 @@ package datasources
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/grafana/grafana/pkg/components/simplejson"
@@ -65,6 +67,8 @@ type DataSource struct {
 	SecureJsonData    map[string][]byte `json:"secureJsonData"`
 	ReadOnly          bool              `json:"readOnly"`
 	UID               string            `json:"uid" xorm:"uid"`
+	// AllowedTeams contains the teams that are allowed to access this datasource. Empty means all teams are allowed.
+	AllowedTeams      string `json:"allowedTeams,omitempty" xorm:"allowed_teams"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion" xorm:"api_version"`
 	// swagger:ignore
@@ -82,6 +86,23 @@ func (ds *DataSource) IsSecureSocksDSProxyEnabled() bool {
 		ds.isSecureSocksDSProxyEnabled = &enabled
 	}
 	return *ds.isSecureSocksDSProxyEnabled
+}
+
+// IsTeamAllowed checks if the given team ID is allowed to access this datasource.
+// If AllowedTeams is empty, all teams are allowed.
+func (ds *DataSource) IsTeamAllowed(teamID int64) bool {
+	if ds.AllowedTeams == "" {
+		return true
+	}
+	// Parse the comma-separated list of allowed team IDs
+	allowedTeams := strings.Split(ds.AllowedTeams, ",")
+	teamIDStr := fmt.Sprintf("%d", teamID)
+	for _, allowedTeam := range allowedTeams {
+		if strings.TrimSpace(allowedTeam) == teamIDStr {
+			return true
+		}
+	}
+	return false
 }
 
 type TeamHTTPHeadersJSONData struct {
@@ -165,6 +186,7 @@ type AddDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
+	AllowedTeams    string            `json:"allowedTeams,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore
@@ -192,6 +214,7 @@ type UpdateDataSourceCommand struct {
 	JsonData        *simplejson.Json  `json:"jsonData"`
 	SecureJsonData  map[string]string `json:"secureJsonData"`
 	UID             string            `json:"uid"`
+	AllowedTeams    string            `json:"allowedTeams,omitempty"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion,omitempty"`
 	// swagger:ignore

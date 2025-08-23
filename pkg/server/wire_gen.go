@@ -574,7 +574,18 @@ func Initialize(ctx context.Context, cfg *setting.Cfg, opts Options, apiOpts api
 		return nil, err
 	}
 	pluginInstaller := manager4.ProvideInstaller(pluginManagementCfg, inMemory, loaderLoader, repoManager, serviceregistrationService)
-	ossProvider := guardian.ProvideGuardian()
+	secretsKVStore, err := kvstore2.ProvideService(sqlStore, secretsService)
+	if err != nil {
+		return nil, err
+	}
+	datasourcePermissionsService := ossaccesscontrol.ProvideDatasourcePermissionsService(cfg, featureToggles, sqlStore)
+	requestConfigProvider := pluginconfig.NewRequestConfigProvider(pluginInstanceCfg)
+	baseProvider := plugincontext.ProvideBaseService(cfg, requestConfigProvider)
+	service15, err := service9.ProvideService(sqlStore, secretsService, secretsKVStore, cfg, featureToggles, accessControl, datasourcePermissionsService, quotaService, pluginstoreService, middlewareHandler, baseProvider)
+	if err != nil {
+		return nil, err
+	}
+	ossProvider := guardian.ProvideGuardian(service15, teamService)
 	cacheServiceImpl := service9.ProvideCacheService(cacheService, sqlStore, ossProvider)
 	shortURLService := shorturlimpl.ProvideService(sqlStore)
 	queryHistoryService := queryhistory.ProvideService(cfg, sqlStore, routeRegisterImpl, accessControl)
@@ -590,17 +601,6 @@ func Initialize(ctx context.Context, cfg *setting.Cfg, opts Options, apiOpts api
 	tempuserService := tempuserimpl.ProvideService(sqlStore, cfg)
 	cleanupServiceImpl := annotationsimpl.ProvideCleanupService(sqlStore, cfg)
 	cleanUpService := cleanup.ProvideService(cfg, serverLockService, shortURLService, sqlStore, queryHistoryService, dashverService, serviceImpl, deleteExpiredService, tempuserService, tracingService, cleanupServiceImpl, dashboardService, dBstore)
-	secretsKVStore, err := kvstore2.ProvideService(sqlStore, secretsService)
-	if err != nil {
-		return nil, err
-	}
-	datasourcePermissionsService := ossaccesscontrol.ProvideDatasourcePermissionsService(cfg, featureToggles, sqlStore)
-	requestConfigProvider := pluginconfig.NewRequestConfigProvider(pluginInstanceCfg)
-	baseProvider := plugincontext.ProvideBaseService(cfg, requestConfigProvider)
-	service15, err := service9.ProvideService(sqlStore, secretsService, secretsKVStore, cfg, featureToggles, accessControl, datasourcePermissionsService, quotaService, pluginstoreService, middlewareHandler, baseProvider)
-	if err != nil {
-		return nil, err
-	}
 	correlationsService, err := correlations.ProvideService(sqlStore, routeRegisterImpl, service15, accessControl, inProcBus, quotaService, cfg)
 	if err != nil {
 		return nil, err
@@ -1141,7 +1141,18 @@ func InitializeForTest(ctx context.Context, t sqlutil.ITestDB, testingT interfac
 		return nil, err
 	}
 	pluginInstaller := manager4.ProvideInstaller(pluginManagementCfg, inMemory, loaderLoader, repoManager, serviceregistrationService)
-	ossProvider := guardian.ProvideGuardian()
+	secretsKVStore, err := kvstore2.ProvideService(sqlStore, secretsService)
+	if err != nil {
+		return nil, err
+	}
+	datasourcePermissionsService := ossaccesscontrol.ProvideDatasourcePermissionsService(cfg, featureToggles, sqlStore)
+	requestConfigProvider := pluginconfig.NewRequestConfigProvider(pluginInstanceCfg)
+	baseProvider := plugincontext.ProvideBaseService(cfg, requestConfigProvider)
+	service15, err := service9.ProvideService(sqlStore, secretsService, secretsKVStore, cfg, featureToggles, accessControl, datasourcePermissionsService, quotaService, pluginstoreService, middlewareHandler, baseProvider)
+	if err != nil {
+		return nil, err
+	}
+	ossProvider := guardian.ProvideGuardian(service15, teamService)
 	cacheServiceImpl := service9.ProvideCacheService(cacheService, sqlStore, ossProvider)
 	userAuthTokenService, err := authimpl.ProvideUserAuthTokenService(sqlStore, serverLockService, quotaService, secretsService, cfg, tracingService, featureToggles)
 	if err != nil {
@@ -1161,17 +1172,6 @@ func InitializeForTest(ctx context.Context, t sqlutil.ITestDB, testingT interfac
 	tempuserService := tempuserimpl.ProvideService(sqlStore, cfg)
 	cleanupServiceImpl := annotationsimpl.ProvideCleanupService(sqlStore, cfg)
 	cleanUpService := cleanup.ProvideService(cfg, serverLockService, shortURLService, sqlStore, queryHistoryService, dashverService, serviceImpl, deleteExpiredService, tempuserService, tracingService, cleanupServiceImpl, dashboardService, dBstore)
-	secretsKVStore, err := kvstore2.ProvideService(sqlStore, secretsService)
-	if err != nil {
-		return nil, err
-	}
-	datasourcePermissionsService := ossaccesscontrol.ProvideDatasourcePermissionsService(cfg, featureToggles, sqlStore)
-	requestConfigProvider := pluginconfig.NewRequestConfigProvider(pluginInstanceCfg)
-	baseProvider := plugincontext.ProvideBaseService(cfg, requestConfigProvider)
-	service15, err := service9.ProvideService(sqlStore, secretsService, secretsKVStore, cfg, featureToggles, accessControl, datasourcePermissionsService, quotaService, pluginstoreService, middlewareHandler, baseProvider)
-	if err != nil {
-		return nil, err
-	}
 	correlationsService, err := correlations.ProvideService(sqlStore, routeRegisterImpl, service15, accessControl, inProcBus, quotaService, cfg)
 	if err != nil {
 		return nil, err

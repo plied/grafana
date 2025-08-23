@@ -29,7 +29,8 @@ type DataSource struct {
 	ReadOnly         bool                   `json:"readOnly"`
 	AccessControl    accesscontrol.Metadata `json:"accessControl,omitempty"`
 	// swagger:ignore
-	APIVersion string `json:"apiVersion"`
+	APIVersion       string                 `json:"apiVersion"`
+	AllowedTeams     string				    `json:"allowedTeams,omitempty"`
 }
 
 type DataSourceListItemDTO struct {

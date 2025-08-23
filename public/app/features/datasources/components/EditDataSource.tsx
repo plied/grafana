@@ -27,7 +27,7 @@ import {
   useTestDataSource,
   useUpdateDatasource,
 } from '../state/hooks';
-import { setIsDefault, setDataSourceName, dataSourceLoaded } from '../state/reducers';
+import { setIsDefault, setDataSourceName, setAllowedTeams, dataSourceLoaded } from '../state/reducers';
 import { trackDsConfigClicked, trackDsConfigUpdated } from '../tracking';
 import { DataSourceRights } from '../types';
 
@@ -63,6 +63,7 @@ export function EditDataSource({ uid, pageId }: Props) {
   const onUpdate = useUpdateDatasource();
   const onDefaultChange = (value: boolean) => dispatch(setIsDefault(value));
   const onNameChange = (name: string) => dispatch(setDataSourceName(name));
+  const onAllowedTeamsChange = (allowedTeams: string) => dispatch(setAllowedTeams(allowedTeams));
   const onOptionsChange = (ds: DataSourceSettingsType) => dispatch(dataSourceLoaded(ds));
 
   return (
@@ -76,6 +77,7 @@ export function EditDataSource({ uid, pageId }: Props) {
       onDelete={onDelete}
       onDefaultChange={onDefaultChange}
       onNameChange={onNameChange}
+      onAllowedTeamsChange={onAllowedTeamsChange}
       onOptionsChange={onOptionsChange}
       onTest={onTest}
       onUpdate={onUpdate}
@@ -93,6 +95,7 @@ export type ViewProps = {
   onDelete: () => void;
   onDefaultChange: (isDefault: boolean) => AnyAction;
   onNameChange: (name: string) => AnyAction;
+  onAllowedTeamsChange: (allowedTeams: string) => AnyAction;
   onOptionsChange: (dataSource: DataSourceSettingsType) => AnyAction;
   onTest: () => void;
   onUpdate: (dataSource: DataSourceSettingsType) => Promise<DataSourceSettingsType>;
@@ -108,6 +111,7 @@ export function EditDataSourceView({
   onDelete,
   onDefaultChange,
   onNameChange,
+  onAllowedTeamsChange,
   onOptionsChange,
   onTest,
   onUpdate,
@@ -190,8 +194,10 @@ export function EditDataSourceView({
       <BasicSettings
         dataSourceName={dataSource.name}
         isDefault={dataSource.isDefault}
+        allowedTeams={dataSource.allowedTeams || ''}
         onDefaultChange={onDefaultChange}
         onNameChange={onNameChange}
+        onAllowedTeamsChange={onAllowedTeamsChange}
         disabled={readOnly || !hasWriteRights}
       />
 

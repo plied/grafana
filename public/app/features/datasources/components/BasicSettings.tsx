@@ -6,15 +6,19 @@ import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { InlineField, InlineSwitch, Input, Badge, useStyles2 } from '@grafana/ui';
 
+import { DataSourceTeamAccess } from './DataSourceTeamAccess';
+
 export interface Props {
   dataSourceName: string;
   isDefault: boolean;
+  allowedTeams: string;
   onNameChange: (name: string) => void;
   onDefaultChange: (value: boolean) => void;
+  onAllowedTeamsChange: (allowedTeams: string) => void;
   disabled?: boolean;
 }
 
-export function BasicSettings({ dataSourceName, isDefault, onDefaultChange, onNameChange, disabled }: Props) {
+export function BasicSettings({ dataSourceName, isDefault, allowedTeams, onDefaultChange, onNameChange, onAllowedTeamsChange, disabled }: Props) {
   return (
     <>
       <div
@@ -65,6 +69,12 @@ export function BasicSettings({ dataSourceName, isDefault, onDefaultChange, onNa
           </InlineField>
         </div>
       </div>
+
+      <DataSourceTeamAccess
+        allowedTeams={allowedTeams}
+        onAllowedTeamsChange={onAllowedTeamsChange}
+        disabled={disabled}
+      />
     </>
   );
 }
