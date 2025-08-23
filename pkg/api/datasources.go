@@ -729,6 +729,7 @@ func (hs *HTTPServer) convertModelToDtos(ctx context.Context, ds *datasources.Da
 		Version:          ds.Version,
 		ReadOnly:         ds.ReadOnly,
 		APIVersion:       ds.APIVersion,
+		AllowedTeams:     ds.AllowedTeams,
 	}
 
 	if hs.pluginStore != nil {

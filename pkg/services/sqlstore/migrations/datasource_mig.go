@@ -147,7 +147,7 @@ func addDataSourceMigration(mg *Migrator) {
 		Mysql("ALTER TABLE data_source MODIFY COLUMN secure_json_data MEDIUMTEXT;"),
 	)
 
-	mg.AddMigration("Add allowed_roles column", NewAddColumnMigration(tableV2, &Column{
-		Name: "allowed_roles", Type: DB_Text, Nullable: true,
+	mg.AddMigration("Add allowed_teams column", NewAddColumnMigration(tableV2, &Column{
+		Name: "allowed_teams", Type: DB_Text, Nullable: true,
 	}))
 }
