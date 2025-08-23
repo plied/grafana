@@ -43,6 +43,7 @@ const setup = (props?: Partial<ViewProps>) => {
         onDelete={jest.fn()}
         onDefaultChange={jest.fn()}
         onNameChange={jest.fn()}
+        onAllowedRolesChange={jest.fn()}
         onOptionsChange={onOptionsChange}
         onTest={jest.fn()}
         onUpdate={jest.fn()}

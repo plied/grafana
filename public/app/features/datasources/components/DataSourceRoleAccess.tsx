@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { OrgRole } from '@grafana/data';
 import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
@@ -33,7 +31,7 @@ export function DataSourceRoleAccess({ allowedRoles, onAllowedRolesChange, disab
     <div className="gf-form-group">
       <div className="gf-form-inline">
         <InlineField
-          label={t('datasources.role-access.label', 'Role Access')}
+          label={t('datasources.role-access.label', 'Access')}
           tooltip={t(
             'datasources.role-access.tooltip',
             'Restrict access to this datasource to specific organization roles. Leave empty to allow all roles to access this datasource.'
@@ -48,6 +46,7 @@ export function DataSourceRoleAccess({ allowedRoles, onAllowedRolesChange, disab
             onChange={handleRoleChange}
             placeholder={t('datasources.role-access.placeholder', 'All roles (no restrictions)')}
             disabled={disabled}
+            width={45}
             data-testid={selectors.pages.DataSource.roleAccess}
           />
         </InlineField>
@@ -55,3 +54,4 @@ export function DataSourceRoleAccess({ allowedRoles, onAllowedRolesChange, disab
     </div>
   );
 }
+
