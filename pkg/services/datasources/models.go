@@ -68,7 +68,7 @@ type DataSource struct {
 	ReadOnly          bool              `json:"readOnly"`
 	UID               string            `json:"uid" xorm:"uid"`
 	// AllowedTeams contains the teams that are allowed to access this datasource. Empty means all teams are allowed.
-	AllowedTeams      string `json:"allowedTeams,omitempty" xorm:"allowed_roles"`
+	AllowedTeams      string `json:"allowedTeams,omitempty" xorm:"allowed_teams"`
 	// swagger:ignore
 	APIVersion string `json:"apiVersion" xorm:"api_version"`
 	// swagger:ignore
