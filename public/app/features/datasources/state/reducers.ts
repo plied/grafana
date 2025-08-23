@@ -3,7 +3,7 @@ import { AnyAction, createAction } from '@reduxjs/toolkit';
 import { DataSourcePluginMeta, DataSourceSettings, LayoutMode, LayoutModes } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { TestingStatus } from '@grafana/runtime';
-import { DataSourcesState, DataSourceSettingsState, DataSourceSettingsWithTeams } from 'app/types/datasources';
+import { DataSourcesState, DataSourceSettingsState } from 'app/types/datasources';
 
 import { GenericDataSourcePlugin } from '../types';
 
@@ -13,7 +13,7 @@ export const initialState: DataSourcesState = {
   dataSources: [],
   plugins: [],
   categories: [],
-  dataSource: {} as DataSourceSettingsWithTeams,
+  dataSource: {} as DataSourceSettings,
   layoutMode: LayoutModes.List,
   searchQuery: '',
   dataSourcesCount: 0,

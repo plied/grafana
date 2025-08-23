@@ -695,10 +695,10 @@ export interface DataSourceSettings<T extends DataSourceJsonData = DataSourceJso
   version?: number;
   apiVersion?: string;
   /**
-   * Comma-separated list of roles that are allowed to access this datasource.
-   * Empty string means all roles are allowed.
+   * Comma-separated list of teamIDs that are allowed to access this datasource.
+   * Empty string means all teams are allowed.
    */
-  allowedRoles?: string;
+  allowedTeams?: string;
 }
 
 /**

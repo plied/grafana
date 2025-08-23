@@ -2,10 +2,6 @@ import { DataSourcePluginMeta, DataSourceSettings, LayoutMode } from '@grafana/d
 import { TestingStatus } from '@grafana/runtime';
 import { GenericDataSourcePlugin } from 'app/features/datasources/types';
 
-// Extend DataSourceSettings to include allowedTeams field
-export interface DataSourceSettingsWithTeams extends DataSourceSettings {
-  allowedTeams?: string;
-}
 
 export interface DataSourcesState {
   dataSources: DataSourceSettings[];
@@ -13,7 +9,7 @@ export interface DataSourcesState {
   dataSourceTypeSearchQuery: string;
   layoutMode: LayoutMode;
   dataSourcesCount: number;
-  dataSource: DataSourceSettingsWithTeams;
+  dataSource: DataSourceSettings;
   dataSourceMeta: DataSourcePluginMeta;
   isLoadingDataSources: boolean;
   isLoadingDataSourcePlugins: boolean;
