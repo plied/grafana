@@ -6,19 +6,19 @@ import { selectors } from '@grafana/e2e-selectors';
 import { t } from '@grafana/i18n';
 import { InlineField, InlineSwitch, Input, Badge, useStyles2 } from '@grafana/ui';
 
-import { DataSourceRoleAccess } from './DataSourceRoleAccess';
+import { DataSourceTeamAccess } from './DataSourceTeamAccess';
 
 export interface Props {
   dataSourceName: string;
   isDefault: boolean;
-  allowedRoles: string;
+  allowedTeams: string;
   onNameChange: (name: string) => void;
   onDefaultChange: (value: boolean) => void;
-  onAllowedRolesChange: (allowedRoles: string) => void;
+  onAllowedTeamsChange: (allowedTeams: string) => void;
   disabled?: boolean;
 }
 
-export function BasicSettings({ dataSourceName, isDefault, allowedRoles, onDefaultChange, onNameChange, onAllowedRolesChange, disabled }: Props) {
+export function BasicSettings({ dataSourceName, isDefault, allowedTeams, onDefaultChange, onNameChange, onAllowedTeamsChange, disabled }: Props) {
   return (
     <>
       <div
@@ -70,9 +70,9 @@ export function BasicSettings({ dataSourceName, isDefault, allowedRoles, onDefau
         </div>
       </div>
 
-      <DataSourceRoleAccess
-        allowedRoles={allowedRoles}
-        onAllowedRolesChange={onAllowedRolesChange}
+      <DataSourceTeamAccess
+        allowedTeams={allowedTeams}
+        onAllowedTeamsChange={onAllowedTeamsChange}
         disabled={disabled}
       />
     </>

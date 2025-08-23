@@ -77,8 +77,8 @@ export const versionedPages = {
       '10.3.0': 'data-testid Data source settings page Alert',
       [MIN_GRAFANA_VERSION]: 'Data source settings page Alert',
     },
-    roleAccess: {
-      [MIN_GRAFANA_VERSION]: 'data-testid Data source role access',
+    teamAccess: {
+      [MIN_GRAFANA_VERSION]: 'data-testid Data source team access',
     },
   },
   DataSources: {

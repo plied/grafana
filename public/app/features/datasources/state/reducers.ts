@@ -3,7 +3,7 @@ import { AnyAction, createAction } from '@reduxjs/toolkit';
 import { DataSourcePluginMeta, DataSourceSettings, LayoutMode, LayoutModes } from '@grafana/data';
 import { t } from '@grafana/i18n';
 import { TestingStatus } from '@grafana/runtime';
-import { DataSourcesState, DataSourceSettingsState } from 'app/types/datasources';
+import { DataSourcesState, DataSourceSettingsState, DataSourceSettingsWithTeams } from 'app/types/datasources';
 
 import { GenericDataSourcePlugin } from '../types';
 
@@ -13,7 +13,7 @@ export const initialState: DataSourcesState = {
   dataSources: [],
   plugins: [],
   categories: [],
-  dataSource: {} as DataSourceSettings,
+  dataSource: {} as DataSourceSettingsWithTeams,
   layoutMode: LayoutModes.List,
   searchQuery: '',
   dataSourcesCount: 0,
@@ -24,7 +24,7 @@ export const initialState: DataSourcesState = {
   isSortAscending: true,
 };
 
-export const dataSourceLoaded = createAction<DataSourceSettings>('dataSources/dataSourceLoaded');
+export const dataSourceLoaded = createAction<DataSourceSettingsWithTeams>('dataSources/dataSourceLoaded');
 export const dataSourcesLoad = createAction<void>('dataSources/dataSourcesLoad');
 export const dataSourcesLoaded = createAction<DataSourceSettings[]>('dataSources/dataSourcesLoaded');
 export const dataSourceMetaLoaded = createAction<DataSourcePluginMeta>('dataSources/dataSourceMetaLoaded');
@@ -37,7 +37,7 @@ export const setDataSourcesLayoutMode = createAction<LayoutMode>('dataSources/se
 export const setDataSourceTypeSearchQuery = createAction<string>('dataSources/setDataSourceTypeSearchQuery');
 export const setDataSourceName = createAction<string>('dataSources/setDataSourceName');
 export const setIsDefault = createAction<boolean>('dataSources/setIsDefault');
-export const setAllowedRoles = createAction<string>('dataSources/setAllowedRoles');
+export const setAllowedTeams = createAction<string>('dataSources/setAllowedTeams');
 export const setIsSortAscending = createAction<boolean>('dataSources/setIsSortAscending');
 
 // Redux Toolkit uses ImmerJs as part of their solution to ensure that state objects are not mutated.
@@ -103,10 +103,10 @@ export const dataSourcesReducer = (state: DataSourcesState = initialState, actio
     };
   }
 
-  if (setAllowedRoles.match(action)) {
+  if (setAllowedTeams.match(action)) {
     return {
       ...state,
-      dataSource: { ...state.dataSource, allowedRoles: action.payload },
+      dataSource: { ...state.dataSource, allowedTeams: action.payload },
     };
   }
 
